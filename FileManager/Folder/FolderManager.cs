@@ -106,9 +106,7 @@ namespace FileManager.FolderManager
             {
                 Directory.Delete(topPath, true);
 
-                bool directoryExists = Directory.Exists(topPath);
-
-                Console.WriteLine("top-level directory exists: " + directoryExists);
+                Console.WriteLine("Folder deleted!");
             }
             catch (Exception e)
             {
@@ -118,36 +116,25 @@ namespace FileManager.FolderManager
 
         public static void CopyFolder()
         {
-            Console.WriteLine("Please enter the text file name.");
-            string fileName = Console.ReadLine();
-
             Console.WriteLine("Please enter the folder source path.");
             string sourcePath = @"" + Console.ReadLine();
+            var dirSource = new DirectoryInfo(sourcePath);
+
+            if (!dirSource.Exists)
+                throw new DirectoryNotFoundException($"Source directory not found: {dirSource.FullName}");
 
             Console.WriteLine("Please enter the folder target path.");
-            string targetPath = @"" + Console.ReadLine();
+            string dirTaget = @"" + Console.ReadLine();
+            //var dirTarget = new DirectoryInfo(targetPath);
 
-            string sourceFile = Path.Combine(sourcePath, fileName);
-            string destFile = Path.Combine(targetPath, fileName);
+            DirectoryInfo[] tempDirs = dirSource.GetDirectories();
 
-            Directory.CreateDirectory(targetPath);
+            Directory.CreateDirectory(dirTaget);
 
-            File.Copy(sourceFile, destFile, true);
-
-            if (Directory.Exists(sourcePath))
+            foreach (FileInfo file in dirSource.GetFiles())
             {
-                string[] files = Directory.GetFiles(sourcePath);
-
-                foreach (string s in files)
-                {
-                    fileName = Path.GetFileName(s);
-                    destFile = Path.Combine(targetPath, fileName);
-                    File.Copy(s, destFile, true);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Source path does not exist!");
+                string targetFilePath = Path.Combine(dirTaget, file.Name);
+                file.CopyTo(targetFilePath);
             }
         }
 
