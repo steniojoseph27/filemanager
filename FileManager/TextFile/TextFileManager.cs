@@ -11,99 +11,94 @@ namespace FileManager.TextFileManager
     {
         public static void CreateTextFile() 
         {
-            string folderName = @"c:\Top-Level Folder";
+            Console.WriteLine("Please enter a directory to add the file.");
+            string fileDir = @"" + Console.ReadLine();
 
-            string pathString = Path.Combine(folderName, "SubFolder");
+            Console.WriteLine("Please give the file a name.");
+            string fileName = Console.ReadLine();
 
-            Directory.CreateDirectory(pathString);
-
-            string fileName = Path.GetRandomFileName();
-
-            pathString = Path.Combine(pathString, fileName);
-
-            Console.WriteLine("Path to my file: {0}\n", pathString);
-
-            if (!File.Exists(pathString))
+            if (!File.Exists(fileDir))
             {
-                using (FileStream fs = File.Create(pathString))
+                using (FileStream fs = File.Create(fileDir))
                 {
-                    for (byte i = 0; i < 100; i++)
-                    {
-                        fs.WriteByte(i);
-                    }
+                    Console.WriteLine("Text file created!");
                 }
             }
             else
             {
                 Console.WriteLine("File \"{0}\" already exists.", fileName);
-                return;
             }
-
-            try
-            {
-                byte[] readBuffer = File.ReadAllBytes(pathString);
-                foreach (byte b in readBuffer)
-                {
-                    Console.Write(b + " ");
-                }
-                Console.WriteLine();
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
         }
 
-        public static void ReadTextFile() 
+        public static void ReadTextFile()
         {
-            string text = File.ReadAllText(@"C:\Users\Public\TestFolder\WriteText.txt");
+            Console.WriteLine("Please enter the directory to locate the file.");
+            string fileDir = @"" + Console.ReadLine();
 
-            Console.WriteLine("Contents of WriteText.txt = {0}", text);
-
-            string[] lines = File.ReadAllLines(@"C:\Users\Public\TestFolder\WriteLines2.txt");
-
-            Console.WriteLine("Contents of WriteLines2.txt = ");
-            foreach (string line in lines)
+            if (File.Exists(fileDir))
             {
-                Console.WriteLine("\t" + line);
-            }
+                try
+                {
+                    string text = File.ReadAllText(fileDir);
 
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
+                    Console.WriteLine($"Contents of {fileDir} = {text}");
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
 
         public static async Task UpdateTextFile() 
         {
-            string text =
-            "A class is the most powerful data type in C#. Like a structure, " +
-            "a class defines the data and behavior of the data type. ";
+            Console.WriteLine("Please enter the file directory to be updated.");
+            string fileDir = @"" + Console.ReadLine();
 
-            await File.WriteAllTextAsync("WriteLines.txt", text);
+            if (File.Exists(fileDir))
+            {
+                try
+                {
+                    Console.WriteLine("Please enter the text to be added.");
+                    string text = Console.ReadLine();
+
+                    await File.WriteAllTextAsync(fileDir, text);
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return;
+                }
+            }
         }
 
         public static void DeleteTextFile() 
         {
-            if (File.Exists(@"C:\Users\Public\DeleteTest\test.txt"))
+            Console.WriteLine("Please enter the file directory to be deleted.");
+            string fileDir = @"" + Console.ReadLine();
+
+            if (File.Exists(fileDir))
             {
                 try
                 {
-                    File.Delete(@"C:\Users\Public\DeleteTest\test.txt");
+                    File.Delete(fileDir);
                 }
-                catch (IOException e)
+                catch (IOException ex)
                 {
-                    Console.WriteLine(e.Message);
-                    return;
+                    Console.WriteLine(ex.Message);
                 }
             }
         }
 
         public static void CopyFile()
         {
-            Console.WriteLine("Please enter the file name: ");
+            Console.WriteLine("Please enter the file directory to be copied.");
             string fileName = Console.ReadLine();
+            if (!File.Exists(fileName))
+            {
+                Console.WriteLine("The file cannot be located.");
+                return;
+            }
 
             Console.WriteLine("Please enter the source path: ");
             string sourcePath = @"" + Console.ReadLine();
@@ -120,50 +115,46 @@ namespace FileManager.TextFileManager
                 Console.WriteLine("Invalid target path.");
                 return;
             }
+            try
+            {
+                string sourceFile = Path.Combine(sourcePath, fileName);
+                string destFile = Path.Combine(targetPath, fileName);
 
-            string sourceFile = Path.Combine(sourcePath, fileName);
-            string destFile = Path.Combine(targetPath, fileName);
+                Directory.CreateDirectory(targetPath);
 
-            Directory.CreateDirectory(targetPath);
-
-            File.Copy(sourceFile, destFile, true);
-
-            //Console.WriteLine("Press any key to exit.");
-            //Console.ReadKey();
+                File.Copy(sourceFile, destFile, true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public static void MoveFiles()
         {
-            /*
-             * 
-             * string sourceFile = @"C:\Users\Public\public\test.txt";
-                string destinationFile = @"C:\Users\Public\private\test.txt";
+            Console.WriteLine("Please enter the file source directory.");
+            string sourceFile = @"" + Console.ReadLine();
+            if (!File.Exists(sourceFile))
+            {
+                Console.WriteLine("The file cannot be located.");
+                return;
+            }
 
-                // To move a file or folder to a new location:
-                System.IO.File.Move(sourceFile, destinationFile);
-
-                // To move an entire directory. To programmatically modify or combine
-                // path strings, use the System.IO.Path class.
-                System.IO.Directory.Move(@"C:\Users\Public\public\test\", @"C:\Users\Public\private");
-             * 
-             */
-
-            string sourceDirectory = @"" + Console.ReadLine();
-            string archiveDirectory = @"" + Console.ReadLine();
+            Console.WriteLine("Please enter the file destination directory.");
+            string destinationFile = @"" + Console.ReadLine();
+            if (!File.Exists(destinationFile))
+            {
+                Console.WriteLine("The file cannot be located.");
+                return;
+            }
 
             try
             {
-                var txtFiles = Directory.EnumerateFiles(sourceDirectory, "*.txt");
-
-                foreach (string currentFile in txtFiles)
-                {
-                    string fileName = currentFile.Substring(sourceDirectory.Length + 1);
-                    Directory.Move(currentFile, Path.Combine(archiveDirectory, fileName));
-                }
+                File.Move(sourceFile, destinationFile);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine(ex.Message);
             }
         }
     }

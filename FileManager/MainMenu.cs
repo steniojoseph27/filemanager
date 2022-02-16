@@ -16,6 +16,7 @@ namespace FileManager
             {
                 Console.WriteLine();
                 Console.WriteLine("Please try again");
+                Console.Clear();
                 printMenu();
                 getInput();
             }

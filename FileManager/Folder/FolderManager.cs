@@ -8,22 +8,39 @@ namespace FileManager.FolderManager
     {
         public static void CreateFolder() 
         {
-            string folderDirName = @"" + Console.ReadLine();
-            string subFolderName = Console.ReadLine();
-
-            if (!Directory.Exists(folderDirName))
+            Console.WriteLine(@"Please enter the top level folder directory or a drive(C:\).");
+            string DirName = @"" + Console.ReadLine();
+            if (!Directory.Exists(DirName))
             {
-                Console.WriteLine("Top-Level Folder is  not exist.");
+                Console.WriteLine("Top level Folder is  not exist.");
                 return;
             }
-            string pathString = Path.Combine(folderDirName, subFolderName);
 
-            Directory.CreateDirectory(pathString);
+            Console.WriteLine("Please enter the sub folder name.");
+            string subFolderName = Console.ReadLine();
+
+            try
+            {
+                string pathString = Path.Combine(DirName, subFolderName);
+
+                Directory.CreateDirectory(pathString);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public static void ReadFolder() 
         {
-            DirectoryInfo  root = new DirectoryInfo(Console.ReadLine());
+            Console.WriteLine("Please enter the folder location.");
+            DirectoryInfo folderLocation = new DirectoryInfo(Console.ReadLine());
+            if (!folderLocation.Exists)
+            {
+                Console.WriteLine("Folder is not exist.");
+                return;
+            }
+
             StringCollection log = new StringCollection();
 
             FileInfo[] files = null;
@@ -31,17 +48,17 @@ namespace FileManager.FolderManager
 
             try
             {
-                files = root.GetFiles("*.*");
+                files = folderLocation.GetFiles("*.txt*");
             }
             
-            catch (UnauthorizedAccessException e)
+            catch (UnauthorizedAccessException ex)
             {
-                log.Add(e.Message);
+                log.Add(ex.Message);
             }
 
-            catch (DirectoryNotFoundException e)
+            catch (DirectoryNotFoundException ex)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine(ex.Message);
             }
 
             if (files != null)
@@ -51,7 +68,7 @@ namespace FileManager.FolderManager
                     Console.WriteLine(fi.FullName);
                 }
 
-                subDirs = root.GetDirectories();
+                subDirs = folderLocation.GetDirectories();
 
                 foreach (DirectoryInfo dirInfo in subDirs)
                 {
@@ -62,8 +79,13 @@ namespace FileManager.FolderManager
 
         public static void UpdateFolder() 
         {
+            Console.WriteLine("Please enter a path.");
             string path = @"" + Console.ReadLine();
+
+            Console.WriteLine("Please enter a source path.");
             string from = @"" + Console.ReadLine();
+
+            Console.WriteLine("Please enter a destination path.");
             string to = @"" + Console.ReadLine();
 
             string prefix = path;
@@ -81,18 +103,11 @@ namespace FileManager.FolderManager
 
         public static void DeleteFolder() 
         {
+            Console.WriteLine("Please the folder location.");
             string topPath = @"" + Console.ReadLine();
-            //string subPath = @"C:\NewDirectory\NewSubDirectory";
 
             try
             {
-                //Directory.CreateDirectory(subPath);
-
-                //using (StreamWriter writer = File.CreateText(subPath + @"\example.txt"))
-                //{
-                //    writer.WriteLine("content added");
-                //}
-
                 Directory.Delete(topPath, true);
 
                 bool directoryExists = Directory.Exists(topPath);
@@ -107,9 +122,14 @@ namespace FileManager.FolderManager
 
         public static void CopyFolder()
         {
-            string fileName = "test.txt";
-            string sourcePath = @"C:\Users\Public\TestFolder";
-            string targetPath = @"C:\Users\Public\TestFolder\SubDir";
+            Console.WriteLine("Please enter the text file name.");
+            string fileName = Console.ReadLine();
+
+            Console.WriteLine("Please enter the folder source path.");
+            string sourcePath = @"" + Console.ReadLine();
+
+            Console.WriteLine("Please enter the folder target path.");
+            string targetPath = @"" + Console.ReadLine();
 
             string sourceFile = Path.Combine(sourcePath, fileName);
             string destFile = Path.Combine(targetPath, fileName);
@@ -133,19 +153,22 @@ namespace FileManager.FolderManager
             {
                 Console.WriteLine("Source path does not exist!");
             }
-
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
         }
 
         public static void MoveFolder()
         {
+            Console.WriteLine("Please enter the folder source directory.");
             string sourceDirectory = @"" + Console.ReadLine();
+
+            Console.WriteLine("Please enter the folder destination directory.");
             string destinationDirectory = @"" + Console.ReadLine();
 
             try
             {
-                Directory.Move(sourceDirectory, destinationDirectory);
+                if (Directory.Exists(sourceDirectory) && Directory.Exists(destinationDirectory))
+                {
+                    Directory.Move(sourceDirectory, destinationDirectory);
+                }
             }
             catch (Exception e)
             {
