@@ -169,8 +169,7 @@ namespace FileManager
 
         static void Exit()
         {
-            Console.WriteLine("Press any key to quit the app.");
-            Console.ReadKey();
+            Environment.Exit(1);
         }
 
     }
