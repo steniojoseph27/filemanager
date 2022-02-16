@@ -43,12 +43,13 @@ namespace FileManager.FolderManager
 
             StringCollection log = new StringCollection();
 
+            DirectoryInfo[] directoryInfos = null;
             FileInfo[] files = null;
-            DirectoryInfo[] subDirs = null;
 
             try
             {
-                files = folderLocation.GetFiles("*.txt*");
+                directoryInfos = folderLocation.GetDirectories();
+                files = folderLocation.GetFiles("*.*");
             }
             
             catch (UnauthorizedAccessException ex)
@@ -60,21 +61,21 @@ namespace FileManager.FolderManager
             {
                 Console.WriteLine(ex.Message);
             }
-
-            if (files != null)
+            if (directoryInfos != null)
             {
-                foreach (FileInfo fi in files)
+                foreach (DirectoryInfo di in directoryInfos)
                 {
-                    Console.WriteLine(fi.FullName);
+                    Console.WriteLine(di.FullName);
+
                 }
-
-                subDirs = folderLocation.GetDirectories();
-
-                foreach (DirectoryInfo dirInfo in subDirs)
+                if (files != null)
                 {
-                    ReadFolder();
+                    foreach (FileInfo fi in files)
+                    {
+                        Console.WriteLine(fi.FullName);
+                    }
                 }
-            }
+            } 
         }
 
         public static void UpdateFolder() 

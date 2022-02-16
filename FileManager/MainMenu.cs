@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace FileManager
 {
@@ -44,8 +45,6 @@ namespace FileManager
 
                 Console.WriteLine("Please type an option to navigate");
 
-                //choice = int.Parse(Console.ReadLine());
-
                 switch (choice)
                 {
                     case 1:
@@ -69,8 +68,6 @@ namespace FileManager
             {
                 Console.WriteLine("The error is: " + ex.Message);
             }
-            //    Console.WriteLine("Choose an option:");
-            //    Console.Write("\r\nSelect an option: ");
             
         }
 
@@ -172,7 +169,8 @@ namespace FileManager
 
         static void Exit()
         {
-            Console.WriteLine("Exit");
+            Console.WriteLine("Press any key to quit the app.");
+            Console.ReadKey();
         }
 
     }
