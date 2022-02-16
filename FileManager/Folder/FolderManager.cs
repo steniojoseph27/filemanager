@@ -80,25 +80,20 @@ namespace FileManager.FolderManager
 
         public static void UpdateFolder() 
         {
-            Console.WriteLine("Please enter a path.");
-            string path = @"" + Console.ReadLine();
-
             Console.WriteLine("Please enter a source path.");
-            string from = @"" + Console.ReadLine();
+            string sourceDirectory = @"" + Console.ReadLine();
 
             Console.WriteLine("Please enter a destination path.");
-            string to = @"" + Console.ReadLine();
+            string destinationDirectory = @"" + Console.ReadLine();
 
-            string prefix = path;
-            string[] folders = Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly);
-            foreach (string folder in folders)
+            try
             {
-                UpdateFolder();
-
-                string newFolderName = prefix + folder.Substring(prefix.Length).Replace(from, to);
-
-                if (newFolderName != folder)
-                    Directory.Move(folder, newFolderName);
+                Directory.Move(sourceDirectory, destinationDirectory);
+                Console.WriteLine("Folder updated!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
